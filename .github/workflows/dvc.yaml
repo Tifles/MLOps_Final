@@ -25,12 +25,13 @@ jobs:
 
       - name: Configure DVC Remote
         run: |
+           echo '${{ secrets.GOOGLE_DRIVE_CREDENTIALS }}' > credentials.json
+           mkdir -p ~/.config/gcloud
+           mv credentials.json ~/.config/gcloud/credentials.json
            dvc remote add -d myremote gdrive:1hm66jFJqfauu2KmRa3gx43XVhRAVnBmq
 
       - name: Pull DVC data
-        env:
-          DVC_GDRIVE_TOKEN: ${{ secrets.GDRIVE_TOKEN }}
-        run: dvc pull  # Получите данные из удаленного хранилища
+        run: dvc pull -v  # Получите данные из удаленного хранилища
       
       - name: Run DVC Pipeline
         run: dvc repro  # Запускаем пайплайн
