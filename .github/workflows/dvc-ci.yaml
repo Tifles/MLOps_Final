@@ -22,6 +22,7 @@ jobs:
         run: |
           pip install --no-cache-dir -r requirements.txt
           pip install --no-cache-dir dvc[gdrive]  # Установка DVC с поддержкой Google Drive
+          pip install --no-cache-dir gcloud
 
       - name: Configure DVC Remote
         run: |
@@ -29,7 +30,7 @@ jobs:
            mkdir -p ~/.config/gcloud
            mv credentials.json ~/.config/gcloud/credentials.json
            dvc remote remove gdrive || true  # Удаляем если существует
-           dvc remote add -d gdrive gdrive:1hm66jFJqfauu2KmRa3gx43XVhRAVnBmq
+           dvc remote add -d gdrive gdrive:129jbmLhLO4rlcxklvBb6qdpRc3DPOOR7
 
       - name: Pull DVC data
         run: |
