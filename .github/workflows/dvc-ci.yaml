@@ -28,11 +28,13 @@ jobs:
            echo '${{ secrets.GOOGLE_DRIVE_CREDENTIALS }}' > credentials.json
            mkdir -p ~/.config/gcloud
            mv credentials.json ~/.config/gcloud/credentials.json
-           dvc remote remove myremote || true  # Удаляем если существует
-           dvc remote add -d myremote gdrive:1hm66jFJqfauu2KmRa3gx43XVhRAVnBmq
+           dvc remote remove gdrive || true  # Удаляем если существует
+           dvc remote add -d gdrive gdrive:1hm66jFJqfauu2KmRa3gx43XVhRAVnBmq
 
       - name: Pull DVC data
-        run: dvc pull -v || exit 1  # Получаем данные из удаленного хранилища
+        run: |
+          dvc remote list
+          dvc pull -v || exit 1  # Получаем данные из удаленного хранилища
       
       - name: Run DVC Pipeline
         run: dvc repro -v || exit 1  # Запускаем пайплайн
