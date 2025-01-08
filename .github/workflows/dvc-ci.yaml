@@ -35,7 +35,7 @@ jobs:
       - name: Pull DVC data
         run: |
           dvc remote list
-          dvc pull -v || exit 1  # Получаем данные из удаленного хранилища
+          dvc pull -f -v || exit 1  # Получаем данные из удаленного хранилища
       
       - name: Run DVC Pipeline
         run: dvc repro -v || exit 1  # Запускаем пайплайн
