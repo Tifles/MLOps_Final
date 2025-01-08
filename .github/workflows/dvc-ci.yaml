@@ -69,7 +69,8 @@ jobs:
 
       - name: Commit DVC changes
         run: |
-          git add dvc.lock .dvc/config*
+          git add dvc.lock .dvc/config
+          git commit -m "Update DVC configuration" || echo "No changes to commit"
           if git diff --staged --quiet; then
             echo "No changes to commit"
           else
