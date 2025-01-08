@@ -30,7 +30,7 @@ jobs:
            mkdir -p ~/.config/gcloud
            mv credentials.json ~/.config/gcloud/credentials.json
            dvc remote remove gdrive || true  # Удаляем если существует
-           dvc remote add -d gdrive gdrive:129jbmLhLO4rlcxklvBb6qdpRc3DPOOR7
+           dvc remote add -d gdrive gdrive:1hm66jFJqfauu2KmRa3gx43XVhRAVnBmq?usp=sharing
 
       - name: Pull DVC data
         run: |
