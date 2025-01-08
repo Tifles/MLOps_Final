@@ -31,7 +31,7 @@ jobs:
            dvc remote add -d myremote gdrive:1hm66jFJqfauu2KmRa3gx43XVhRAVnBmq
 
       - name: Pull DVC data
-        run: dvc pull -v  # Получите данные из удаленного хранилища
+        run: dvc pull   # Получаем данные из удаленного хранилища
       
       - name: Run DVC Pipeline
         run: dvc repro  # Запускаем пайплайн
