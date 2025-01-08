@@ -1,57 +1,12 @@
-name: DVC CI
-
-on:
-  push:
-    branches:
-      - main  # Запуск при  пуше в ветку main
-
-jobs:
-  dvc:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-        
-      - name: Set up Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: '3.10.16'
-
-      - name: Install dependencies
-        run: |
-          pip install -r requirements.txt
-          pip install dvc[gdrive]  # Установка DVC с поддержкой Google Drive
-
-      - name: Configure DVC Remote
-        run: |
-           dvc remote add -d myremote gdrive:1hm66jFJqfauu2KmRa3gx43XVhRAVnBmq
-
-      - name: Pull DVC data
-        env:
-          DVC_GDRIVE_TOKEN: ${{ secrets.GDRIVE_TOKEN }}
-        run: dvc pull  # Получите данные из удаленного хранилища
-      
-      - name: Run DVC Pipeline
-        run: dvc repro  # Запускаем пайплайн
-
-      - name: DVC Push Data
-        run: dvc push  # Отправляем результаты
-      
-      - name: Git add and commit DVC files
-        run: |
-          git config user.email "github-actions@example.com"
-          git config user.name "GitHub Actions"
-          git add .dvc dvc.lock
-    
-          if [[ $(git status --porcelain | grep -c "dvc.lock\|.dvc") -ne 0 ]]; then
-            git commit -m "Update DVC data"
-          else
-            echo "No changes to commit"
-          fi
-
-      - name: Git push DVC Config
-        uses: ad-m/github-push-action@master
-        with:
-          github_token: ${{ secrets.ACTIONS_PAT }}
-          branch: ${{ github.ref }}
+stages:
+  download_data:
+    cmd: python scripts/download.py
+    outs:
+      - data/iris_dataset.csv
+  process_data:
+    cmd: python scripts/process_data.py
+    deps:
+      - data/iris_dataset.csv
+      - scripts/process_data.py
+    outs:
+      - data/proc_iris_dataset.csv
