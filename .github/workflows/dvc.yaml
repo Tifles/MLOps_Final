@@ -11,33 +11,34 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         
       - name: Set up Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v5
         with:
-          python-version: '3.10.16'
+          python-version: '3.11111'
 
       - name: Install dependencies
         run: |
-          pip install -r requirements.txt
-          pip install dvc[gdrive]  # Установка DVC с поддержкой Google Drive
+          pip install --no-cache-dir -r requirements.txt
+          pip install --no-cache-dir dvc[gdrive]  # Установка DVC с поддержкой Google Drive
 
       - name: Configure DVC Remote
         run: |
            echo '${{ secrets.GOOGLE_DRIVE_CREDENTIALS }}' > credentials.json
            mkdir -p ~/.config/gcloud
            mv credentials.json ~/.config/gcloud/credentials.json
+           dvc remote remove myremote || true  # Удаляем если существует
            dvc remote add -d myremote gdrive:1hm66jFJqfauu2KmRa3gx43XVhRAVnBmq
 
       - name: Pull DVC data
-        run: dvc pull -v  # Получаем данные из удаленного хранилища
+        run: dvc pull -v || exit 1  # Получаем данные из удаленного хранилища
       
       - name: Run DVC Pipeline
-        run: dvc repro  # Запускаем пайплайн
+        run: dvc repro -v || exit 1  # Запускаем пайплайн
 
       - name: DVC Push Data
-        run: dvc push  # Отправляем результаты
+        run: dvc push -v || exit 1  # Отправляем результаты
       
       - name: Git add and commit DVC files
         run: |
@@ -54,5 +55,5 @@ jobs:
       - name: Git push DVC Config
         uses: ad-m/github-push-action@master
         with:
-          github_token: ${{ secrets.ACTIONS_PAT }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
           branch: ${{ github.ref }}
