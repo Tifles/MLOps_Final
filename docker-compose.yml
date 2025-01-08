@@ -1,0 +1,33 @@
+version: '3'
+
+services:
+     clearml-server:
+       image: allegroai/clearml:latest
+       ports:
+         - "8080:8080"  # Web UI
+         - "8081:8081"  # API
+       environment:
+         - CLEARML_SERVER_API_HOST=0.0.0.0
+         - CLEARML_SERVER_API_PORT=8081
+         - CLEARML_SERVER_DB_TYPE=mysql
+         - CLEARML_SERVER_DB_HOST=db  # Имя сервиса базы данных
+         - CLEARML_SERVER_DB_PORT=3306
+         - CLEARML_SERVER_DB_USER=clearml_user  # Здесь можно указать другого пользователя
+         - CLEARML_SERVER_DB_PASSWORD=clearml_password  # Здесь можно указать свой пароль
+         - CLEARML_SERVER_DB_NAME=clearml_db  # Имя базы данных
+       restart: unless-stopped
+
+     db:
+       image: mysql:latest
+       ports:
+         - "3306:3306"
+       environment:
+         - MYSQL_ROOT_PASSWORD=root_password
+         - MYSQL_DATABASE=clearml_db
+         - MYSQL_USER=clearml_user
+         - MYSQL_PASSWORD=clearml_password
+       volumes:
+         - mysql_data:/var/lib/mysql
+
+volumes:
+     mysql_data:
